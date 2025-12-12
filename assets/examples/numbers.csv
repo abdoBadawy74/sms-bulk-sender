@@ -1,0 +1,4 @@
+number,message,name
++1234567890,Hello {name}!,John
+0987654321,Test message,Jane
++1122334455,Simple alert,User
