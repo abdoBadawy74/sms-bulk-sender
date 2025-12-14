@@ -53,13 +53,16 @@ class FileService {
                  if (val == 'name') headerMap['name'] = i;
                  if (val == 'service') headerMap['service'] = i;
                  if (val == 'location') headerMap['location'] = i;
+                 if (val == 'country') headerMap['country'] = i;
+                 if (val.contains('tasdek') && val.contains('from')) headerMap['tasdek_from'] = i;
+                 if (val.contains('tasdek') && val.contains('to')) headerMap['tasdek_to'] = i;
              }
              isHeaderParsed = true;
              
              if (headerMap.isNotEmpty) continue; 
              
              // Fallback default mapping
-             headerMap = {'number': 0, 'name': 1, 'service': 2, 'location': 3};
+             headerMap = {'number': 0, 'name': 1, 'service': 2, 'location': 3, 'country': 4, 'tasdek_from': 5, 'tasdek_to': 6};
         }
         
         // Parse using map
@@ -67,6 +70,9 @@ class FileService {
         String name = _getValue(row, headerMap['name']);
         String service = _getValue(row, headerMap['service']);
         String location = _getValue(row, headerMap['location']);
+        String country = _getValue(row, headerMap['country']);
+        String tasdekFrom = _getValue(row, headerMap['tasdek_from']);
+        String tasdekTo = _getValue(row, headerMap['tasdek_to']);
 
         if (number.isEmpty) continue;
 
@@ -75,7 +81,10 @@ class FileService {
             number: _cleanNumber(number),
             name: name,
             service: service,
-            location: location
+            location: location,
+            country: country,
+            tasdekFrom: tasdekFrom,
+            tasdekTo: tasdekTo,
         ));
         rowIndex++;
     }
