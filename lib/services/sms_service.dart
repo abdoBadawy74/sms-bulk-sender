@@ -101,6 +101,7 @@ class SmsService {
             // A better way is using `sendSms` and assuming success if no platform exception.
             // Delivery reports are complex and async. We'll stick to "Sent to OS buffer".
             
+            // NOTE: another_telephony provides sendSms with subscriptionId
             await _telephony.sendSms(
                 to: row.number,
                 message: message,

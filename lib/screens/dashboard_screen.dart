@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import 'package:another_telephony/telephony.dart'; // <--- Added import
+
 import '../services/file_service.dart';
 import '../services/sms_service.dart';
 import '../services/log_service.dart';
@@ -105,6 +107,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
     _smsService.batchSize = batch;
     _smsService.delaySeconds = delay;
     _smsService.pauseAfterBatchSeconds = pause;
+  }
+
+  void _clearFile() {
+    setState(() {
+      _rows = [];
+      _total = 0;
+      _sent = 0;
+      _failed = 0;
+      _currentIndex = 0;
+    });
   }
 
   Future<void> _startSending() async {
@@ -308,12 +320,22 @@ class _DashboardScreenState extends State<DashboardScreen> {
             child: Row(
               children: [
                 Expanded(
-                  child: ElevatedButton.icon(
-                    onPressed: _isSending ? null : _pickFile,
-                    icon: const Icon(Icons.upload_file),
-                    label: const Text('Load File / اختر ملف'),
-                    style: ElevatedButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 16)),
-                  ),
+                  child: _rows.isEmpty 
+                      ? ElevatedButton.icon(
+                        onPressed: _isSending ? null : _pickFile,
+                        icon: const Icon(Icons.upload_file),
+                        label: const Text('Load File / اختر ملف'),
+                        style: ElevatedButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 16)),
+                      )
+                      : ElevatedButton.icon(
+                        onPressed: _isSending ? null : _clearFile,
+                        icon: const Icon(Icons.delete, color: Colors.white),
+                        label: const Text('Clear File / حذف الملف', style: TextStyle(color: Colors.white)),
+                        style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            backgroundColor: Colors.red,
+                        ),
+                      ),
                 ),
                 const SizedBox(width: 8),
                 Expanded(
