@@ -58,7 +58,7 @@ class SmsRow {
     msg = msg.replaceAll(RegExp(r'\{tasdek_to\}|\$\{tasdek_to\}', caseSensitive: false), tasdekTo ?? '');
 
     // Append mandatory link
-    msg += "\nhttps://tagned.mod.gov.eg/16militaryservice.aspx";
+    // msg += "\nhttps://tagned.mod.gov.eg/16militaryservice.aspx";
 
     return msg;
   }

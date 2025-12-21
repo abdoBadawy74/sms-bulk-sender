@@ -29,9 +29,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
   
   // Template State
   String _selectedTemplateType = 'Certificates'; // or 'Security'
-  final String _certificatesTemplate = "السيد/ \${Name}\nالمقيم في \${country}\nنحيطكم علمًا بأن شهادتكم جاهزة للاستلام.\nشكرًا لكم.";
-  final String _securityTemplate = "السيد/ \${Name}\nبرجاء التوجه لاستلام التصديق الأمني الخاص بكم.\nمن تاريخ: \${tasdek_from} إلى: \${tasdek_to}\nالمكان: \${country}";
+ final String _certificatesTemplate =
+    "السيد / \${Name}\n"
+    "لقد قمتم بسداد الرسوم، يرجى إرسال صورة شخصية وصورة البطاقة على رقم الواتساب التالي:\n"
+    "wa.me/+201234567890";
 
+  final String _securityTemplate =
+    "السيد / \${Name}\n"
+    "لقد تم قبول التصديق الأمني الخاص بكم لدولة \${country}\n"
+    "وساري من تاريخ \${tasdek_from} إلى \${tasdek_to}\n"
+    "علمًا بأن مدة تصريح السفر 15 يوم من تاريخ السداد";
 
   // State
   List<SmsRow> _rows = [];
