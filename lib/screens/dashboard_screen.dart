@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-import 'package:another_telephony/telephony.dart'; // <--- Added import
+
 
 import '../services/file_service.dart';
 import '../services/sms_service.dart';
@@ -31,7 +31,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   String _selectedTemplateType = 'Certificates'; // or 'Security'
  final String _certificatesTemplate =
     "*** ادارة التجنيد والتعبئة ***\n"
-    " لقد قمت بسداد رسوم الشهادة برجاء ارسال صورة شخصية وصورة البطاقه لطباعه الشهاده على رقم الوتساب\n"
+    " لقد قمت بسداد رسوم الشهادة برجاء ارسال صورة شخصية وصورة البطاقه لطباعة الشهاده على رقم الوتساب\n"
     " 01094258960";
 
   final String _securityTemplate =

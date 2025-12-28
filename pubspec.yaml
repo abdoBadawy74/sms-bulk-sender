@@ -14,7 +14,8 @@ dependencies:
   provider: ^6.0.5
   
   # SMS functionality
-  another_telephony: ^0.4.1
+  background_sms:
+    path: ./packages/background_sms
   
   # File handling
   file_picker: ^8.0.0

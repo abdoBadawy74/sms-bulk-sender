@@ -1,0 +1,34 @@
+group 'com.j.background_sms'
+version '1.0'
+
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:8.0.0' // Updated gradle version for safety, or keep old? Best keep simple but add namespace.
+    }
+}
+
+rootProject.allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+apply plugin: 'com.android.library'
+
+android {
+    namespace 'com.j.background_sms' // <--- ADDED NAMESPACE HERE
+    compileSdkVersion 33 // Bumped slightly for compatibility
+
+    defaultConfig {
+        minSdkVersion 16
+    }
+    lintOptions {
+        disable 'InvalidPackage'
+    }
+}

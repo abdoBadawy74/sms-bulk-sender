@@ -1,10 +1,9 @@
 import 'dart:async';
-import 'package:another_telephony/telephony.dart';
+import 'package:background_sms/background_sms.dart';
 import '../models/sms_row.dart';
 import 'log_service.dart';
 
 class SmsService {
-  final Telephony _telephony = Telephony.instance;
   final LogService _logService;
   
   // Job configuration
@@ -13,10 +12,6 @@ class SmsService {
   int pauseAfterBatchSeconds = 10;
   
   bool _isStopping = false;
-  
-  // Stream controller to report progress specific to the service (optional, or use Provider in UI)
-  // For simplicity, we'll return a Stream of updates or assume the caller manages state update.
-  // Actually, UI needs to know when a row updates. We can use a callback or a Stream.
   
   SmsService(this._logService);
 
@@ -39,15 +34,11 @@ class SmsService {
         if (_isStopping) break;
         
         final row = rows[i];
-        if (row.status == AppSmsStatus.sent) continue; // Skip already sent if re-running?
+        if (row.status == AppSmsStatus.sent) continue; 
         
-        // Update status to sending
         row.status = AppSmsStatus.sending;
         onRowUpdate?.call(i, row);
         
-        // CRITICAL: Ensure we have a message to send. 
-        // If finalMessage is null, it means UI didn't set it?
-        // We'll throw or fail if null.
         String messageToSend = row.finalMessage ?? "Error: No message content";
 
         bool success = await sendSingle(row, messageToSend);
@@ -67,14 +58,11 @@ class SmsService {
         
         processedInBatch++;
         
-        // Delay logic
         if (i < rows.length - 1) {
-             // Pause after batch
             if (processedInBatch >= batchSize) {
-                processedInBatch = 0; // Reset batch counter
+                processedInBatch = 0; 
                 await Future.delayed(Duration(seconds: pauseAfterBatchSeconds));
             } else {
-                // Regular delay
                 await Future.delayed(Duration(seconds: delaySeconds));
             }
         }
@@ -83,40 +71,28 @@ class SmsService {
 
   Future<bool> sendSingle(SmsRow row, String message) async {
     int attempts = 0;
-    int maxRetries = 2; // Total 3 attempts
+    int maxRetries = 2; 
     
     while (attempts <= maxRetries) {
         if (_isStopping) return false;
         
         try {
-            // Check permissions explicitly before each send? Not efficient, assume granted.
-            // But we should catch errors.
-            
-            // Telephony sendSms is fire-and-forget usually unless using sendSms with status listener.
-            // Since we need to know if it worked, we might use sendSms with listener, 
-            // but typical bulk apps just fire. 
-            // However, `telephony` has `sendSms` which is Future based?
-            // Actually `another_telephony` `sendSms` returns void but takes a status listener.
-            // We need to wrap it in a Completer or just assume success if no exception.
-            // A better way is using `sendSms` and assuming success if no platform exception.
-            // Delivery reports are complex and async. We'll stick to "Sent to OS buffer".
-            
-            // NOTE: another_telephony provides sendSms with subscriptionId
-            await _telephony.sendSms(
-                to: row.number,
+            // BackgroundSms.sendMessage returns SmsStatus
+            SmsStatus result = await BackgroundSms.sendMessage(
+                phoneNumber: row.number, 
                 message: message,
-                isMultipart: true, // Handle long messages
             );
             
-            // If we are here, it didn't throw.
-            return true;
-            
+            if (result == SmsStatus.sent) {
+                return true;
+            } else {
+                throw Exception("Start sending failed, status: $result");
+            }
         } catch (e) {
             attempts++;
-            row.error = e.toString();
+            String errorMsg = e.toString();
+            row.error = errorMsg;
             if (attempts > maxRetries) return false;
-            
-            // Backoff
             await Future.delayed(Duration(seconds: 2 * attempts));
         }
     }
